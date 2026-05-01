@@ -250,6 +250,7 @@ const Studio = ({ instrumentName, onBack, onHasNotesChange, onRecordingChange })
   const audioChunks = useRef([]);
   const startTime = useRef(null);
   const destRef = useRef(null);
+  const scoreAreaRef = useRef(null);
 
   /* =========================
      PERFORMANCE REFS
@@ -553,6 +554,29 @@ const Studio = ({ instrumentName, onBack, onHasNotesChange, onRecordingChange })
     return () => window.removeEventListener("keydown", handleEnterKey);
   }, [toggleRecording, isEditMode]);
 
+    /* =========================
+    AUTOMATIC SCORE SHEET SCROLL DOWN
+  ========================= */
+
+  // NEW: The "Target Every Box" Scroll Fix
+  useEffect(() => {
+    // We use a small delay to let VexFlow finish drawing the new notes
+    const timer = setTimeout(() => {
+      if (scoreAreaRef.current) {
+        // 1. Scroll the main container
+        scoreAreaRef.current.scrollTop = scoreAreaRef.current.scrollHeight;
+        
+        // 2. Find ANY inner containers built by the Notation component and scroll them too
+        const innerDivs = scoreAreaRef.current.querySelectorAll('div');
+        innerDivs.forEach(div => {
+          div.scrollTop = div.scrollHeight;
+        });
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [recordedData]); // This triggers every time a new note is played
+
   /* =========================
      SCORE EXPORT (VEXFLOW → PNG)
   ========================= */
@@ -602,20 +626,6 @@ const Studio = ({ instrumentName, onBack, onHasNotesChange, onRecordingChange })
     link.download = "score.png";
     link.click();
   };
-
-  /* =========================
-     AUTO SCROLL SCORE VIEW
-  ========================= */
-  useEffect(() => {
-    const score = document.querySelector(".score-area");
-    if (!score) return;
-
-    const id = requestAnimationFrame(() => {
-      score.scrollTo({ top: score.scrollHeight, behavior: "smooth" });
-    });
-
-    return () => cancelAnimationFrame(id);
-  }, [recordedData]);
 
   /* =========================
      RENDER
@@ -714,7 +724,7 @@ const Studio = ({ instrumentName, onBack, onHasNotesChange, onRecordingChange })
         </div>
       </div>
 
-      <div className="score-area">
+      <div className="score-area" ref={scoreAreaRef}>
         <p className="score-label">Real-time VexFlow Notation</p>
         <Notation notes={recordedData} />
       </div>
