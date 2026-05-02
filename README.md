@@ -39,7 +39,7 @@ Glowworm Music Studio is a progressive web application (PWA) designed to bring h
 - **No sound playing:** Ensure your browser tab is not muted and that you have interacted with the page (clicked anywhere) before playing, as browsers require user interaction to start the AudioContext.
 
 ## 👥 Team Glowworm  
-- **Gregory Treinen:** Lead Backend & Database Developer. Base Instruments. 
+- **Gregory Treinen:** Lead Backend & Database Developer. Studio & Base PWA/Instruments. 
 - **Allan Hernandez:** Project Team Member. Tutorial & Metronome.
 - **Hennysa Omoregie:** Project Team Member. Overlay & Extra Instruments.
 - **Laurelle Sekpe:** Project Team Member. Keyboard Tooltips.
